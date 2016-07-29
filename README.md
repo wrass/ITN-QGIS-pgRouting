@@ -187,7 +187,7 @@ $BODY$
     v_descriptivegroup osmm_itn.roadlink.descriptivegroup%TYPE;
     v_descriptiveterm osmm_itn.roadlink.descriptiveterm%TYPE;
     v_fid osmm_itn.roadlink.fid%TYPE;
-    v_itnroadlink_dftname osmm_itn.roadlink.dftname%TYPE;
+    v_itnroadlink_dftname osmm_itn.roadlink.roadnumber%TYPE;
     v_itnroadlink_roadname osmm_itn.roadlink.roadname%TYPE;
     v_length osmm_itn.roadlink.length%TYPE;
     v_natureofroad osmm_itn.roadlink.natureofroad%TYPE;
@@ -203,6 +203,7 @@ $BODY$
     v_sep_e integer;
     v_date date;
     v_ctr integer;
+    v_ctr_target integer;
     v_total integer;
 
   BEGIN
@@ -213,6 +214,7 @@ $BODY$
     SELECT 'now'::timestamp INTO v_date;
     v_ctr := 1;
     v_total := 500;
+    v_ctr_target := count(1) from osmm_itn.roadlink;
     LOOP
       FETCH cur_rl INTO v_descriptivegroup, v_descriptiveterm, v_fid, v_itnroadlink_dftname, v_itnroadlink_roadname, v_length, v_natureofroad, v_polyline, v_primary_key, v_rl_attribute, v_oneway, v_separation_s, v_separation_e;
       EXIT WHEN NOT FOUND;
@@ -275,7 +277,7 @@ $BODY$
         VALUES (v_polyline, v_primary_key, v_fid, v_itnroadlink_dftname, v_itnroadlink_roadname, v_natureofroad, v_length, v_descriptivegroup, v_descriptiveterm, v_rl_attribute, v_oneway, v_sep_s, v_sep_e, v_primary_key);
       IF (v_ctr = v_total) THEN
         v_total := v_total + 500;
-        RAISE NOTICE '% records inserted', v_ctr;
+        RAISE INFO '% / % records inserted', v_ctr, v_ctr_target;
       END IF;
       
       v_ctr := v_ctr + 1;
